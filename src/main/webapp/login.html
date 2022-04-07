@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Login</title>
+</head>
+
+<body>
+    <form action="/api/login" method="post" id="login">
+        <div>
+            <input type="text" name="username" placeholder="username">
+        </div>
+        <div>
+            <input type="password" name="password" placeholder="password">
+        </div>
+        <div>
+            <input type="text" id="code" name="code" placeholder="code">
+            <img id="codeImg" src="/api/validate-code" alt="">
+        </div>
+        <div style="display: none;">
+            <input type="text" id="uuid" name="uuid" placeholder="uuid">
+        </div>
+        <div>
+            <input type="submit" value="Login">
+        </div>
+    </form>
+    <div><a href="/index.html">Back to Index</a></div>
+
+    <script>
+        function getCode() {
+            return $.get({
+                url: '/api/validate-code',
+                success: function (data) {
+                    $('#codeImg').attr('src', data.imageUrl);
+                    $('#uuid').val(data.randomCode);
+                }
+            });
+        }
+        $(function () {
+            $('#codeImg').click(function () {
+                getCode();
+            });
+            $('#login').submit(function (e) {
+                e.preventDefault();
+                let data = $(this).serialize();
+                $.post({
+                    url: '/api/login',
+                    data,
+                    success: function (data) {
+                        if (data.token !== undefined) {
+                            localStorage["token"] = data.token;
+                            alert('登录成功');
+                            window.location.href = '/index.html';
+                        } else {
+                            alert(data.error);
+                            getCode();
+                        }
+                    },
+                    error: function (err) {
+                        alert(err.responseJSON.error);
+                        getCode();
+                    }
+                });
+            });
+            getCode();
+        });
+    </script>
+</body>
+
+</html>

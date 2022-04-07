@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Index</title>
+</head>
+
+<body>
+    <h2>Links</h2>
+    <ul>
+        <li id="login"><a href="login.html">login</a></li>
+        <li id="logout"><a href="#" onclick="loutout()">logout</a></li>
+        <li id="face"><a href="face.html">face</a></li>
+    </ul>
+
+    <script>
+        function loutout() {
+            localStorage.removeItem('token');
+            alert('退出成功');
+            window.location.href = '/index.html';
+        }
+
+        $(function () {
+            let token = localStorage["token"];
+            if (token !== undefined) {
+                $('#login').hide();
+                $('#logout').show();
+                $('#face').show();
+            } else {
+                $('#login').show();
+                $('#logout').hide();
+                $('#face').hide();
+            }
+        });
+    </script>
+</body>
+
+</html>
